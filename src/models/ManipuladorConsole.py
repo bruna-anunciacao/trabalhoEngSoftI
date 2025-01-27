@@ -10,23 +10,29 @@ class ManipuladorConsole:
     def __init__(self):
         self.biblioteca = Biblioteca.get_instance()
         
+    def iniciar(self):
+        print("Sistema de Biblioteca iniciado. Digite um comando ou 'sai' para sair.")
+        while True:
+            comando = input("Comando: ")
+            self.executar_comando(comando)
+
     def executar_comando(self, comando):
-        partes = comando.split(" ")
+        partes = comando.split()
         acao = partes[0]
-        match (acao):
-            case "emp":
-                self.emprestar_livro(partes[1], partes[2])
-            case "dev":
-                self.devolver_livro(partes[1], partes[2])
-            case "res":
-                self.reservar_livro(partes[1], partes[2])
-            case "liv":
-                self.informacoes_livro(partes[1])
-            case "usu":
-                self.informacoes_usuario(partes[1])
-            case "sai":
-                print("Saindo...")
-                exit()
+
+        if acao == 'emp':
+            self.emprestar_livro(partes[1], partes[2])
+        elif acao == 'dev':
+            self.devolver_livro(partes[1], partes[2])
+        elif acao == 'res':
+            self.reservar_livro(partes[1], partes[2])
+        elif acao == 'liv':
+            self.informacoes_livro(partes[1])
+        elif acao == 'usu':
+            self.informacoes_usuario(partes[1])
+        elif acao == 'sai':
+            print("Saindo do sistema...")
+            exit()
                 
     def emprestar_livro(self, codigo_usuario, codigo_exemplar):
         usuario = self.encontrar_usuario(codigo_usuario)
@@ -42,21 +48,21 @@ class ManipuladorConsole:
             else:
                 print(f"Não há exemplares disponíveis do livro {livro.titulo}")
     def devolver_livro(self, codigo_usuario, codigo_exemplar):
-        usuario = self.biblioteca.get_usuario(codigo_usuario)
-        livro = self.biblioteca.get_livro(codigo_exemplar)
+        usuario = self.encontrar_usuario(codigo_usuario)
+        livro = self.encontrar_livro(codigo_exemplar)
         
         if usuario and livro:
-            emprestimo = next((emprestimo for emprestimo in usuario.emprestimos if emprestimo.exemplar.codigo == codigo_exemplar), None)
+            emprestimo = next((emp for emp in usuario.emprestimos if emp.exemplar in livro.exemplares), None)
             if emprestimo:
-                emprestimo.exemplar.status = 'Disponível'
+                emprestimo.exemplar.status = 'disponível'
                 usuario.emprestimos.remove(emprestimo)
-                print(f"O livro {livro.titulo} foi devolvido pelo usuário {usuario.nome}")
+                print(f"Devolução realizada: {usuario.nome} - {livro.titulo}")
             else:
-                print(f"O usuário {usuario.nome} não possui o livro {livro.titulo} emprestado")
+                print(f"Nenhum empréstimo encontrado para o usuário {usuario.nome} e o livro {livro.titulo}.")
         
     def reservar_livro(self, codigo_usuario, codigo_exemplar):
-        usuario = self.biblioteca.get_usuario(codigo_usuario)
-        livro = self.biblioteca.get_livro(codigo_exemplar)
+        usuario = self.encontrar_usuario(codigo_usuario)
+        livro = self.encontrar_livro(codigo_exemplar)
         
         if usuario and livro:
             if len(usuario.reservas) < 3:
@@ -75,7 +81,7 @@ class ManipuladorConsole:
             print(f"Reservas: {len(livro.reservas)}")
             for exemplar in livro.exemplares:
                 status = 'Emprestado' if exemplar.status == 'Emprestado' else 'Disponível'
-                print(f"Exemplar {exemplar.id_exemplar}: {status}")
+                print(f"Exemplar {exemplar.codigo}: {status}")
     
     def informacoes_usuario(self, codigo_usuario):
         usuario = self.encontrar_usuario(codigo_usuario)
@@ -84,10 +90,10 @@ class ManipuladorConsole:
             print(f"Usuário: {usuario.nome}")
             print("Empréstimos:")
             for emprestimo in usuario.emprestimos:
-                print(f"- {emprestimo.exemplar.id_exemplar} ({emprestimo.data_emprestimo} até {emprestimo.data_devolucao})")
+                print(f"- {emprestimo.exemplar.codigo} ({emprestimo.data_emprestimo} até {emprestimo.data_devolucao})")
             print("Reservas:")
             for reserva in usuario.reservas:
-                print(f"- {reserva.livro.titulo} ({reserva.data})")
+                print(f"- {reserva.livro.titulo} ({reserva.data_reserva})")
                 
     def encontrar_usuario(self, codigo_usuario):
         return next((usuario for usuario in self.biblioteca.usuarios if usuario.codigo == codigo_usuario), None)
