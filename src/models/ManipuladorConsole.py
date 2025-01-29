@@ -5,6 +5,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 from models.Reserva import Reserva
 from models.Biblioteca import Biblioteca
 from models.Emprestimo import Emprestimo
+from models.VerificaEmprestimoAluno import VerificaEmprestimoAluno
+from models.VerificaEmprestimoProfessor import VerificaEmprestimoProfessor
+from models.AlunoGraduacao import AlunoGraduacao
+from models.AlunoPos import AlunoPos
+from models.Professor import Professor
 
 class ManipuladorConsole:
     def __init__(self):
@@ -38,15 +43,31 @@ class ManipuladorConsole:
         usuario = self.encontrar_usuario(codigo_usuario)
         livro = self.encontrar_livro(codigo_exemplar)
         
-        if usuario and livro: 
+        if usuario and livro:
             exemplar_disponivel = next((exemplar for exemplar in livro.exemplares if exemplar.status == 'Disponível'), None)
-            if exemplar_disponivel:
+
+            if exemplar_disponivel is None:
+                print("Não há exemplares disponíveis para empréstimo.")
+                return
+
+            if isinstance(usuario, (AlunoGraduacao, AlunoPos)):
+                emprestimo = VerificaEmprestimoAluno(usuario, exemplar_disponivel)
+            elif isinstance(usuario, Professor):
+                emprestimo = VerificaEmprestimoProfessor(usuario, exemplar_disponivel)
+            else:
+                print("Tipo de usuário não suportado para empréstimos.")
+                return
+
+            permitido, mensagem = emprestimo.verificar_condicoes(usuario, livro)
+            if permitido:
+                exemplar_disponivel = next((exemplar for exemplar in livro.exemplares if exemplar.status == 'Disponível'), None)
                 emprestimo = Emprestimo(usuario, exemplar_disponivel)
                 usuario.emprestimos.append(emprestimo)
                 exemplar_disponivel.status = 'Emprestado'
                 print(f"O livro {livro.titulo} foi emprestado para o usuário {usuario.nome}")
             else:
-                print(f"Não há exemplares disponíveis do livro {livro.titulo}")
+                print(f"Empréstimo não realizado: {mensagem}")
+                
     def devolver_livro(self, codigo_usuario, codigo_exemplar):
         usuario = self.encontrar_usuario(codigo_usuario)
         livro = self.encontrar_livro(codigo_exemplar)
