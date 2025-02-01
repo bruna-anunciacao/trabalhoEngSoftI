@@ -11,7 +11,7 @@ class Livro:
         self.reservas = []
     
     def adicionar_exemplar(self, codigo_exemplar):
-        self.exemplares.append(Exemplar(codigo_exemplar, 'Disponível', None))
+        self.exemplares.append(Exemplar(codigo_exemplar, 'Disponível', None, self))
     
     def adicionar_reserva(self, reserva):
         self.reservas.append(reserva)

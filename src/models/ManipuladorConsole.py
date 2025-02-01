@@ -42,31 +42,37 @@ class ManipuladorConsole:
     def emprestar_livro(self, codigo_usuario, codigo_exemplar):
         usuario = self.encontrar_usuario(codigo_usuario)
         livro = self.encontrar_livro(codigo_exemplar)
-        
-        if usuario and livro:
-            exemplar_disponivel = next((exemplar for exemplar in livro.exemplares if exemplar.status == 'Disponível'), None)
 
-            if exemplar_disponivel is None:
-                print("Não há exemplares disponíveis para empréstimo.")
-                return
+        if not usuario or not livro:
+            print("Usuário ou livro não encontrado.")
+            return
 
-            if isinstance(usuario, (AlunoGraduacao, AlunoPos)):
-                emprestimo = VerificaEmprestimoAluno(usuario, exemplar_disponivel)
-            elif isinstance(usuario, Professor):
-                emprestimo = VerificaEmprestimoProfessor(usuario, exemplar_disponivel)
-            else:
-                print("Tipo de usuário não suportado para empréstimos.")
-                return
+        exemplar_disponivel = next((exemplar for exemplar in livro.exemplares if exemplar.status == 'Disponível'), None)
+        if exemplar_disponivel is None:
+            print("Não há exemplares disponíveis para empréstimo.")
+            return
 
-            permitido, mensagem = emprestimo.verificar_condicoes(usuario, livro)
-            if permitido:
-                exemplar_disponivel = next((exemplar for exemplar in livro.exemplares if exemplar.status == 'Disponível'), None)
-                emprestimo = Emprestimo(usuario, exemplar_disponivel)
-                usuario.emprestimos.append(emprestimo)
-                exemplar_disponivel.status = 'Emprestado'
-                print(f"O livro {livro.titulo} foi emprestado para o usuário {usuario.nome}")
-            else:
-                print(f"Empréstimo não realizado: {mensagem}")
+        verificadores = {
+            AlunoGraduacao: VerificaEmprestimoAluno,
+            AlunoPos: VerificaEmprestimoAluno,
+            Professor: VerificaEmprestimoProfessor
+        }
+
+        classe_verificadora = verificadores.get(type(usuario))
+        if not classe_verificadora:
+            print("Tipo de usuário não suportado para empréstimos.")
+            return
+
+        emprestimo = classe_verificadora()
+        permitido, mensagem = emprestimo.verificar_condicoes(usuario, livro)
+
+        if permitido:
+            emprestimo = Emprestimo(usuario, exemplar_disponivel)
+            usuario.emprestimos.append(emprestimo)
+            exemplar_disponivel.status = 'Emprestado'
+            print(f"O livro {livro.titulo} foi emprestado para o usuário {usuario.nome}")
+        else:
+            print(f"Empréstimo não realizado: {mensagem}")
                 
     def devolver_livro(self, codigo_usuario, codigo_exemplar):
         usuario = self.encontrar_usuario(codigo_usuario)
@@ -111,7 +117,7 @@ class ManipuladorConsole:
             print(f"Usuário: {usuario.nome}")
             print("Empréstimos:")
             for emprestimo in usuario.emprestimos:
-                print(f"- {emprestimo.exemplar.codigo} ({emprestimo.data_emprestimo} até {emprestimo.data_devolucao})")
+                print(f"- Exemplar {emprestimo.exemplar.codigo} do livro {emprestimo.exemplar.livro.titulo} ({emprestimo.data_emprestimo} até {emprestimo.data_devolucao})")
             print("Reservas:")
             for reserva in usuario.reservas:
                 print(f"- {reserva.livro.titulo} ({reserva.data_reserva})")
