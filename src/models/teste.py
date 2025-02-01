@@ -30,6 +30,7 @@ biblioteca.livros.append(livro3)
 
 livro4 = Livro("201", "Agile Software Development, Principles, Patterns and Practices", "Prentice Hall", "Robert Martin", "1ª", 2002)
 livro4.adicionar_exemplar("05")
+biblioteca.livros.append(livro4)
 
 manipulador = ManipuladorConsole()
 manipulador.iniciar()

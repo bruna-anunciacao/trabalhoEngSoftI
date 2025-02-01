@@ -70,6 +70,8 @@ class ManipuladorConsole:
             emprestimo = Emprestimo(usuario, exemplar_disponivel)
             usuario.emprestimos.append(emprestimo)
             exemplar_disponivel.status = 'Emprestado'
+            usuario.reservas = [reserva for reserva in usuario.reservas if reserva.livro != livro]
+            livro.reservas = [reserva for reserva in livro.reservas if reserva.usuario != usuario]
             print(f"O livro {livro.titulo} foi emprestado para o usuário {usuario.nome}")
         else:
             print(f"Empréstimo não realizado: {mensagem}")
@@ -93,6 +95,9 @@ class ManipuladorConsole:
         
         if usuario and livro:
             if len(usuario.reservas) < 3:
+                if usuario.possui_reserva_para_livro(livro):
+                    print(f"O usuário {usuario.nome} já possui uma reserva para o livro {livro.titulo}")
+                    return
                 reserva = Reserva(usuario, livro)
                 usuario.reservas.append(reserva)
                 livro.reservas.append(reserva)
