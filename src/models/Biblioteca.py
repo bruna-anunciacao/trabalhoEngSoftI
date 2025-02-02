@@ -61,6 +61,7 @@ class Biblioteca:
             emprestimo = Emprestimo(usuario, exemplar_disponivel)
             usuario.emprestimos.append(emprestimo)
             exemplar_disponivel.status = 'Emprestado'
+            exemplar_disponivel.emprestimo = emprestimo
             usuario.reservas = [reserva for reserva in usuario.reservas if reserva.livro != livro]
             livro.reservas = [reserva for reserva in livro.reservas if reserva.usuario != usuario]
             print(f"O livro {livro.titulo} foi emprestado para o usuário {usuario.nome}")
@@ -116,7 +117,10 @@ class Biblioteca:
             print(f"Título: {livro.titulo}")
             print(f"Reservas: {len(livro.reservas) > 0 and ', '.join([reserva.usuario.nome for reserva in livro.reservas]) or 'Nenhuma reserva'}")
             for exemplar in livro.exemplares:
-                status = 'Emprestado' if exemplar.status == 'Emprestado' else 'Disponível'
+                if exemplar.status == 'Emprestado' and exemplar.emprestimo is not None:
+                    status = f"Emprestado para {exemplar.emprestimo.usuario.nome} ({exemplar.emprestimo.data_emprestimo.strftime('%d/%m/%Y')} até {exemplar.emprestimo.data_devolucao.strftime('%d/%m/%Y')})"
+                else:
+                    status = 'Disponível'
                 print(f"Exemplar {exemplar.codigo}: {status}")
             return
         return print("Livro não encontrado.")
