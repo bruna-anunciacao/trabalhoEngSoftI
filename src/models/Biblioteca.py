@@ -9,8 +9,10 @@ from models.VerificaEmprestimoProfessor import VerificaEmprestimoProfessor
 from models.AlunoGraduacao import AlunoGraduacao
 from models.AlunoPos import AlunoPos
 from models.Professor import Professor
+
 class Biblioteca:
     _instance = None
+    
     @staticmethod
     def get_instance():
         if Biblioteca._instance is None:

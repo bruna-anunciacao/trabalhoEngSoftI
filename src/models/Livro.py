@@ -9,14 +9,22 @@ class Livro:
         self.ano = ano
         self.exemplares = []
         self.reservas = []
+        self.observadores = [] 
     
     def adicionar_exemplar(self, codigo_exemplar):
         self.exemplares.append(Exemplar(codigo_exemplar, 'Disponível', None, self))
     
     def adicionar_reserva(self, reserva):
         self.reservas.append(reserva)
-        self.notificar_observadores()
+        if len(self.reservas) > 2:
+            self.notificar_observadores()
         
+    def adicionar_observador(self, observador):
+        self.observadores.append(observador)
+
+    def remover_observador(self, observador):
+        self.observadores.remove(observador)
+
     def notificar_observadores(self):
         for observador in self.observadores:
-            observador.atualizar(self)
+            observador.update(self)
