@@ -98,7 +98,7 @@ class Biblioteca:
         livro = self.encontrar_livro(codigo_exemplar)
         if livro:
             print(f"Título: {livro.titulo}")
-            print(f"Reservas: {len(livro.reservas)}")
+            print(f"Reservas: {len(livro.reservas) > 0 and ', '.join([reserva.usuario.nome for reserva in livro.reservas]) or 'Nenhuma reserva'}")
             for exemplar in livro.exemplares:
                 status = 'Emprestado' if exemplar.status == 'Emprestado' else 'Disponível'
                 print(f"Exemplar {exemplar.codigo}: {status}")
