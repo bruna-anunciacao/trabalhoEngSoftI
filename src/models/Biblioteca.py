@@ -31,8 +31,11 @@ class Biblioteca:
         usuario = self.encontrar_usuario(codigo_usuario)
         livro = self.encontrar_livro(codigo_exemplar)
 
-        if not usuario or not livro:
-            print("Usuário ou livro não encontrado.")
+        if not usuario:
+            print("Usuário não encontrado.")
+            return
+        if not livro:
+            print("Livro não encontrado.")
             return
 
         exemplar_disponivel = next((exemplar for exemplar in livro.exemplares if exemplar.status == 'Disponível'), None)
@@ -76,6 +79,12 @@ class Biblioteca:
                 emprestimo.status_emprestimo = 'Finalizado'
                 print(f"Devolução realizada: {usuario.nome} - {livro.titulo}")
                 return
+        elif not usuario:
+            print("Usuário não encontrado.")
+            return
+        else:
+            print("Livro não encontrado.")
+            return
         return print("Empréstimo não encontrado.")
 
     def reservar_livro(self, codigo_usuario, codigo_exemplar):
@@ -94,8 +103,11 @@ class Biblioteca:
             else:
                 print(f"O usuário {usuario.nome} já possui 3 reservas")
             return
+        elif not usuario:
+            print("Usuário não encontrado.")
+            return
         else:
-            print("Usuário ou livro não encontrado.")
+            print("Livro não encontrado.")
             return
 
     def informacoes_livro(self, codigo_exemplar):
