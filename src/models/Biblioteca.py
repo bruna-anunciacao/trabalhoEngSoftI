@@ -75,7 +75,8 @@ class Biblioteca:
                 emprestimo.data_devolucao = datetime.now()
                 emprestimo.status_emprestimo = 'Finalizado'
                 print(f"Devolução realizada: {usuario.nome} - {livro.titulo}")
-                
+                return
+        return print("Empréstimo não encontrado.")
 
     def reservar_livro(self, codigo_usuario, codigo_exemplar):
         usuario = self.encontrar_usuario(codigo_usuario)
@@ -88,11 +89,14 @@ class Biblioteca:
                     return
                 reserva = Reserva(usuario, livro)
                 usuario.reservas.append(reserva)
-                # livro.reservas.append(reserva)
                 livro.adicionar_reserva(reserva)
                 print(f"O livro {livro.titulo} foi reservado para o usuário {usuario.nome}")
             else:
                 print(f"O usuário {usuario.nome} já possui 3 reservas")
+            return
+        else:
+            print("Usuário ou livro não encontrado.")
+            return
 
     def informacoes_livro(self, codigo_exemplar):
         livro = self.encontrar_livro(codigo_exemplar)
