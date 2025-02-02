@@ -9,6 +9,7 @@ from models.Comando import ComandoReservar
 from models.Comando import ComandoInformacoesLivro
 from models.Comando import ComandoInformacoesUsuario
 from models.Comando import ComandoObservar
+from models.Comando import ComandoNotificacoes
 
 class ManipuladorConsole:
     def __init__(self):
@@ -19,7 +20,8 @@ class ManipuladorConsole:
             'res': ComandoReservar(self.biblioteca),
             'liv': ComandoInformacoesLivro(self.biblioteca),
             'usu': ComandoInformacoesUsuario(self.biblioteca),
-            'obs': ComandoObservar(self.biblioteca)
+            'obs': ComandoObservar(self.biblioteca),
+            'ntf': ComandoNotificacoes(self.biblioteca)
         }
 
     def iniciar(self):

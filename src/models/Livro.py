@@ -17,14 +17,15 @@ class Livro:
     def adicionar_reserva(self, reserva):
         self.reservas.append(reserva)
         if len(self.reservas) > 2:
-            self.notificar_observadores()
-        
+            nomes_usuarios = [reserva.usuario.nome for reserva in self.reservas]
+            self.notificar_observadores(nomes_usuarios)
+                    
     def adicionar_observador(self, observador):
         self.observadores.append(observador)
 
     def remover_observador(self, observador):
         self.observadores.remove(observador)
 
-    def notificar_observadores(self):
+    def notificar_observadores(self, nomes_usuarios):
         for observador in self.observadores:
-            observador.update(self)
+            observador.update(self, nomes_usuarios)

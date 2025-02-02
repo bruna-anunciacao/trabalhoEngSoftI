@@ -9,6 +9,7 @@ from models.VerificaEmprestimoProfessor import VerificaEmprestimoProfessor
 from models.AlunoGraduacao import AlunoGraduacao
 from models.AlunoPos import AlunoPos
 from models.Professor import Professor
+from models.ProfessorObservador import ProfessorObservador
 
 class Biblioteca:
     _instance = None
@@ -120,3 +121,11 @@ class Biblioteca:
 
     def encontrar_livro(self, codigo_exemplar):
         return next((livro for livro in self.livros if livro.codigo == codigo_exemplar), None)
+    
+    def total_notificacoes(self, codigo_usuario):
+        total = 0
+        for livro in self.livros:
+            for observador in livro.observadores:
+                if isinstance(observador, ProfessorObservador) and observador.professor.codigo == codigo_usuario:
+                    total += observador.contador_notificacoes
+        return total
