@@ -86,6 +86,7 @@ class Biblioteca:
                 reserva = Reserva(usuario, livro)
                 usuario.reservas.append(reserva)
                 livro.reservas.append(reserva)
+                livro.adicionar_reserva(reserva)
                 print(f"O livro {livro.titulo} foi reservado para o usuário {usuario.nome}")
             else:
                 print(f"O usuário {usuario.nome} já possui 3 reservas")
