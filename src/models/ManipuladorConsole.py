@@ -3,13 +3,13 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'src')))
 
 from models.Biblioteca import Biblioteca
-from models.Comando import ComandoEmprestar
-from models.Comando import ComandoDevolver
-from models.Comando import ComandoReservar
-from models.Comando import ComandoInformacoesLivro
-from models.Comando import ComandoInformacoesUsuario
-from models.Comando import ComandoObservar
-from models.Comando import ComandoNotificacoes
+from models.ComandoEmprestar import ComandoEmprestar
+from models.ComandoDevolver import ComandoDevolver
+from models.ComandoReservar import ComandoReservar
+from models.ComandoInformacoesLivro import ComandoInformacoesLivro
+from models.ComandoInformacoesUsuario import ComandoInformacoesUsuario
+from models.ComandoObservar import ComandoObservar
+from models.ComandoNotificacoes import ComandoNotificacoes
 
 class ManipuladorConsole:
     def __init__(self):
@@ -40,25 +40,3 @@ class ManipuladorConsole:
             resultado = self.comandos[acao].executar(*partes[1:])
         else:
             print("Comando inválido.")
-
-    # def emprestar_livro(self, codigo_usuario, codigo_exemplar):
-    #     return self.biblioteca.emprestar_livro(codigo_usuario, codigo_exemplar)
-
-    # def devolver_livro(self, codigo_usuario, codigo_exemplar):
-    #     return self.biblioteca.devolver_livro(codigo_usuario, codigo_exemplar)
-
-    # def reservar_livro(self, codigo_usuario, codigo_exemplar):
-    #     return self.biblioteca.reservar_livro(codigo_usuario, codigo_exemplar)
-    # def informacoes_livro(self, codigo_exemplar):
-    #     return self.biblioteca.informacoes_livro(codigo_exemplar)
-    # def informacoes_usuario(self, codigo_usuario):
-    #     return self.biblioteca.informacoes_usuario(codigo_usuario)
-    # def registrar_observador(self, codigo_usuario, codigo_livro):
-    #     usuario = self.biblioteca.encontrar_usuario(codigo_usuario)
-    #     livro = self.biblioteca.encontrar_livro(codigo_livro)
-
-    #     if usuario and livro:
-    #         observador = ProfessorObservador(usuario)
-    #         livro.adicionar_observador(observador)
-    #         return f"Professor {usuario.nome} registrado como observador do livro {livro.titulo}."
-    #     return "Usuário ou livro não encontrado."
