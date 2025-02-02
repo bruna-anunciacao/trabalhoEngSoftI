@@ -1,6 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'src')))
+from datetime import datetime
 
 from models.Reserva import Reserva
 from models.Emprestimo import Emprestimo
@@ -71,7 +72,8 @@ class Biblioteca:
             emprestimo = next((emp for emp in usuario.emprestimos if emp.exemplar in livro.exemplares), None)
             if emprestimo:
                 emprestimo.exemplar.status = 'disponível'
-                usuario.emprestimos.remove(emprestimo)
+                emprestimo.data_devolucao = datetime.now()
+                emprestimo.status_emprestimo = 'Finalizado'
                 print(f"Devolução realizada: {usuario.nome} - {livro.titulo}")
                 
 
@@ -109,10 +111,13 @@ class Biblioteca:
             print(f"Usuário: {usuario.nome}")
             print("Empréstimos:")
             for emprestimo in usuario.emprestimos:
-                print(f"- Exemplar {emprestimo.exemplar.codigo} do livro {emprestimo.exemplar.livro.titulo} ({emprestimo.data_emprestimo} até {emprestimo.data_devolucao})")
+                if emprestimo.status_emprestimo == 'Em curso':
+                    print(f"- {emprestimo.exemplar.livro.titulo} ({emprestimo.data_emprestimo.strftime('%d/%m/%Y')} até {emprestimo.data_devolucao.strftime('%d/%m/%Y')}) - Em curso")    
+                else:
+                    print(f"- {emprestimo.exemplar.livro.titulo} ({emprestimo.data_emprestimo.strftime('%d/%m/%Y')} até {emprestimo.data_devolucao.strftime('%d/%m/%Y')}) - Devolvido")
             print("Reservas:")
             for reserva in usuario.reservas:
-                print(f"- {reserva.livro.titulo} ({reserva.data_reserva})")
+                print(f"- {reserva.livro.titulo} ({reserva.data_reserva.strftime('%d/%m/%Y')})")
             return
         return print("Usuário não encontrado.")
 

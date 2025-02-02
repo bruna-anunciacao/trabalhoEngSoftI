@@ -6,3 +6,4 @@ class Emprestimo:
         self.data_emprestimo = datetime.now()
         self.data_devolucao = self.data_emprestimo + timedelta(days=usuario.periodo_emprestimo())
         self.status = 'Emprestado'
+        self.status_emprestimo = 'Em curso'
