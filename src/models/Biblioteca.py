@@ -78,6 +78,7 @@ class Biblioteca:
                 emprestimo.exemplar.status = 'disponível'
                 emprestimo.data_devolucao = datetime.now()
                 emprestimo.status_emprestimo = 'Finalizado'
+                usuario.emprestimos.remove(emprestimo) 
                 print(f"Devolução realizada: {usuario.nome} - {livro.titulo}")
                 return
         elif not usuario:
@@ -154,3 +155,13 @@ class Biblioteca:
                 if isinstance(observador, ProfessorObservador) and observador.professor.codigo == codigo_usuario:
                     total += observador.contador_notificacoes
         return total
+    
+    def registrar_observador(self, codigo_usuario, codigo_livro):
+        usuario = self.encontrar_usuario(codigo_usuario)
+        livro = self.encontrar_livro(codigo_livro)
+
+        if usuario and livro:
+            observador = ProfessorObservador(usuario)
+            livro.adicionar_observador(observador)
+            return f"Professor {usuario.nome} registrado como observador do livro {livro.titulo}."
+        return "Usuário ou livro não encontrado."
