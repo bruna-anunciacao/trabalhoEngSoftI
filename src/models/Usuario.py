@@ -10,6 +10,9 @@ class Usuario(ABC):
     @abstractmethod
     def periodo_emprestimo(self):
         pass
+    
+    def estrategia_emprestimo(self):
+        pass
 
     def tem_livro_atrasado(self):
         for emprestimo in self.emprestimos:

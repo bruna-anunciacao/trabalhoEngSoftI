@@ -43,27 +43,20 @@ class Biblioteca:
             print("Não há exemplares disponíveis para empréstimo.")
             return
 
-        verificadores = {
-            AlunoGraduacao: VerificaEmprestimoAluno,
-            AlunoPos: VerificaEmprestimoAluno,
-            Professor: VerificaEmprestimoProfessor
-        }
+        estrategia = usuario.estrategia_emprestimo()
 
-        classe_verificadora = verificadores.get(type(usuario))
-        if not classe_verificadora:
-            print("Tipo de usuário não suportado para empréstimos.")
-            return
-
-        emprestimo = classe_verificadora()
-        permitido, mensagem = emprestimo.verificar_condicoes(usuario, livro)
+        permitido, mensagem = estrategia.verificar_condicoes(usuario, livro)
 
         if permitido:
             emprestimo = Emprestimo(usuario, exemplar_disponivel)
             usuario.emprestimos.append(emprestimo)
             exemplar_disponivel.status = 'Emprestado'
             exemplar_disponivel.emprestimo = emprestimo
+
+            # Remove reservas do usuário e do livro
             usuario.reservas = [reserva for reserva in usuario.reservas if reserva.livro != livro]
             livro.reservas = [reserva for reserva in livro.reservas if reserva.usuario != usuario]
+
             print(f"O livro {livro.titulo} foi emprestado para o usuário {usuario.nome}")
         else:
             print(f"Empréstimo não realizado: {mensagem}")

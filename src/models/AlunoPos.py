@@ -1,4 +1,5 @@
 from .Usuario import Usuario
+from .VerificaEmprestimoAluno import VerificaEmprestimoAluno
 
 class AlunoPos(Usuario):
     def __init__(self, codigo, nome):
@@ -7,3 +8,6 @@ class AlunoPos(Usuario):
         
     def periodo_emprestimo(self):
         return 5
+    
+    def estrategia_emprestimo(self):
+        return VerificaEmprestimoAluno()
