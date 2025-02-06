@@ -14,19 +14,19 @@ from models.ProfessorObservador import ProfessorObservador
 
 class Biblioteca:
     _instance = None
-    
+
     @staticmethod
     def get_instance():
         if Biblioteca._instance is None:
             Biblioteca._instance = Biblioteca()
         return Biblioteca._instance
-    
+
     def __init__(self):
         if Biblioteca._instance is not None:
             raise Exception("This class is a singleton!")
         self.usuarios = []
         self.livros = []
-    
+
     def emprestar_livro(self, codigo_usuario, codigo_exemplar):
         usuario = self.encontrar_usuario(codigo_usuario)
         livro = self.encontrar_livro(codigo_exemplar)
@@ -71,14 +71,14 @@ class Biblioteca:
     def devolver_livro(self, codigo_usuario, codigo_exemplar):
         usuario = self.encontrar_usuario(codigo_usuario)
         livro = self.encontrar_livro(codigo_exemplar)
-        
+
         if usuario and livro:
             emprestimo = next((emp for emp in usuario.emprestimos if emp.exemplar in livro.exemplares), None)
             if emprestimo:
-                emprestimo.exemplar.status = 'disponível'
+                emprestimo.exemplar.status = 'Disponível'
                 emprestimo.data_devolucao = datetime.now()
                 emprestimo.status_emprestimo = 'Finalizado'
-                usuario.emprestimos.remove(emprestimo) 
+                usuario.emprestimos.remove(emprestimo)
                 print(f"Devolução realizada: {usuario.nome} - {livro.titulo}")
                 return
         elif not usuario:
@@ -92,7 +92,7 @@ class Biblioteca:
     def reservar_livro(self, codigo_usuario, codigo_exemplar):
         usuario = self.encontrar_usuario(codigo_usuario)
         livro = self.encontrar_livro(codigo_exemplar)
-        
+
         if usuario and livro:
             if len(usuario.reservas) < 3:
                 if usuario.possui_reserva_para_livro(livro):
@@ -133,7 +133,7 @@ class Biblioteca:
             print("Empréstimos:")
             for emprestimo in usuario.emprestimos:
                 if emprestimo.status_emprestimo == 'Em curso':
-                    print(f"- {emprestimo.exemplar.livro.titulo} ({emprestimo.data_emprestimo.strftime('%d/%m/%Y')} até {emprestimo.data_devolucao.strftime('%d/%m/%Y')}) - Em curso")    
+                    print(f"- {emprestimo.exemplar.livro.titulo} ({emprestimo.data_emprestimo.strftime('%d/%m/%Y')} até {emprestimo.data_devolucao.strftime('%d/%m/%Y')}) - Em curso")
                 else:
                     print(f"- {emprestimo.exemplar.livro.titulo} ({emprestimo.data_emprestimo.strftime('%d/%m/%Y')} até {emprestimo.data_devolucao.strftime('%d/%m/%Y')}) - Devolvido")
             print("Reservas:")
@@ -147,15 +147,17 @@ class Biblioteca:
 
     def encontrar_livro(self, codigo_exemplar):
         return next((livro for livro in self.livros if livro.codigo == codigo_exemplar), None)
-    
+
     def total_notificacoes(self, codigo_usuario):
         total = 0
+        mensagens = []
         for livro in self.livros:
             for observador in livro.observadores:
                 if isinstance(observador, ProfessorObservador) and observador.professor.codigo == codigo_usuario:
                     total += observador.contador_notificacoes
-        return total
-    
+                    mensagens.extend(observador.notificacoes)
+        return total, mensagens
+
     def registrar_observador(self, codigo_usuario, codigo_livro):
         usuario = self.encontrar_usuario(codigo_usuario)
         livro = self.encontrar_livro(codigo_livro)

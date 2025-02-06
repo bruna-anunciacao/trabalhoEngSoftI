@@ -4,7 +4,10 @@ class ProfessorObservador(Observador):
     def __init__(self, professor):
         self.professor = professor
         self.contador_notificacoes = 0
+        self.notificacoes = []
 
     def update(self, livro, nomes_usuarios):
         self.contador_notificacoes += 1
-        print(f"Notificação {self.contador_notificacoes}: O livro {livro.titulo} tem mais de 2 reservas.")
+        nomes_formatados = ', '.join(nomes_usuarios)  # Junta os nomes com vírgula
+        mensagem = (f"Notificação {self.contador_notificacoes}: O livro '{livro.titulo}' tem mais de 2 reservas. Reservado por: {nomes_formatados}.")
+        self.notificacoes.append(mensagem)
