@@ -153,9 +153,9 @@ class Biblioteca:
         mensagens = []
         for livro in self.livros:
             for observador in livro.observadores:
-                if isinstance(observador, ProfessorObservador) and observador.professor.codigo == codigo_usuario:
-                    total += observador.contador_notificacoes
-                    mensagens.extend(observador.notificacoes)
+                total_notificacao, mensagens_notificacao = observador.contar_notificacoes(codigo_usuario)
+                total += total_notificacao
+                mensagens.extend(mensagens_notificacao)
         return total, mensagens
 
     def registrar_observador(self, codigo_usuario, codigo_livro):
