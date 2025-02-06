@@ -6,13 +6,15 @@ class Usuario(ABC):
         self.nome = nome
         self.emprestimos = []
         self.reservas = []
-    
+
     @abstractmethod
     def periodo_emprestimo(self):
         pass
     
+    def estrategia_emprestimo(self):
+        pass
+
     def tem_livro_atrasado(self):
-        # Verifica se o usuário tem algum empréstimo atrasado
         for emprestimo in self.emprestimos:
             if emprestimo.status_emprestimo == 'Em curso' and emprestimo.data_devolucao < datetime.now():
                 return True

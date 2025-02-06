@@ -5,6 +5,7 @@ class VerificaEmprestimoAluno(VerificaEmprestimo):
         if usuario.tem_livro_atrasado():
             return False, "Usuário possui livros em atraso."
 
+
         if len(usuario.emprestimos) >= usuario.max_emprestimos:
             return False, f"Usuário já atingiu o limite de {usuario.max_emprestimos} empréstimos."
 
