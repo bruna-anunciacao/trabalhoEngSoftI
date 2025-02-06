@@ -105,3 +105,15 @@ if usuario and usuario.emprestimos:
     manipulador.executar_comando("emp 789 100")  
 else:
     print("Erro: Empréstimo não encontrado para teste de atraso.")
+
+print("\n=== TESTE 11: Livro com todas os exemplares reservados ===")
+print("dev 123 101") # Limpando empréstimo anterior para o usuario 123
+manipulador.executar_comando("dev 123 101")  # Devolução
+print("res 456 101")
+manipulador.executar_comando("res 456 101")  # Reservar livro 101 para Aluno Pós
+print("res 789 101")
+manipulador.executar_comando("res 789 101")  # Reservar livro 101 para Aluno Graduação
+print("res 100 101")
+manipulador.executar_comando("res 100 101")  # Reservar livro 101 para Professor
+print("emp 123 101")
+manipulador.executar_comando("emp 123 101")  # Emprestar livro 101 para Aluno Graduação
